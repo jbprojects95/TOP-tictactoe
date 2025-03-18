@@ -1,24 +1,37 @@
-const createGame = (function () {
+function gameLogic() {
   const gameBoard = ["", "", "", "", "", "", "", "", ""];
 
-  const printBoard = () => {
-    const grid = [
-      gameBoard.slice(0, 3),
-      gameBoard.slice(3, 6),
-      gameBoard.slice(6, 9),
-    ];
-    console.log(grid);
-  };
+  const printBoard = () => console.log(gameBoard);
 
   const addToBoard = (index, value) => {
-    gameBoard.splice(index, 1, value);
+    const acceptedValues = ["X", "x", "O", "o"];
+    if (!acceptedValues.includes(value)) {
+      console.log("Wrong input");
+      return;
+    }
+    if (index < 1 || index > 9) {
+      console.log("Not in grid!");
+      return;
+    }
+
+    const boardIndex = index - 1;
+    if (gameBoard.at(boardIndex)) {
+      console.log("Already at index!");
+      return;
+    }
+
+    gameBoard.splice(boardIndex, 1, value);
   };
   return { gameBoard, printBoard, addToBoard };
-})();
+}
 
-createGame.printBoard();
+// gameLogic.addToBoard(3, "X");
+// gameLogic.addToBoard(3, "O");
+// gameLogic.addToBoard(3, "O");
 
-createGame.addToBoard(3, "X");
-createGame.addToBoard(7, "O");
+const game = gameLogic();
 
-createGame.printBoard();
+game.printBoard();
+game.addToBoard(1, "X");
+game.addToBoard(2, "Z");
+game.printBoard();

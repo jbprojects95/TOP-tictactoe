@@ -166,7 +166,6 @@ const game = (function () {
       // Here the code returns the winning marker (I'll change this logic eventually)
       // It will only do this after checking each individual winCon cells. If the markers all match it declares the winner.
       if (win) {
-        console.log(`Winner is: ${marker}`);
         return true;
       }
     }
@@ -194,7 +193,7 @@ const player = (function () {
 
   const setTurn = (value) => {
     if (game.checkWin()) {
-      // console.log("Winner found, no further moves allowed.");
+      console.log("Winner found, no further moves allowed.");
       return;
     }
     let marker = value.toUpperCase();
@@ -208,24 +207,27 @@ const player = (function () {
     }
   };
 
-  return { getTurn, setTurn };
+  const printPlayerTurn = () => {
+    if (!game.checkWin()) {
+      console.log(`PLAYER TURN: ${player.getTurn()}`);
+    } else {
+      console.log(`Winner is: ${game.getLastValidMove()}`);
+    }
+  };
+
+  return { getTurn, setTurn, printPlayerTurn };
 })();
 
 game.createBoard(3, 3);
 
-game.addToBoard(3, 2, "X");
-// player.setTurn(game.getLastValidMove());
-
+game.addToBoard(1, 1, "X");
 game.addToBoard(2, 2, "O");
-// player.setTurn(game.getLastValidMove());
-
-game.addToBoard(3, 1, "X");
-
-game.addToBoard(1, 2, "O");
-
+game.addToBoard(1, 2, "X");
+game.addToBoard(1, 3, "O");
 game.addToBoard(3, 3, "X");
+game.addToBoard(3, 1, "O");
 
 // ----------------------------------------------------
-console.log(`PLAYER TURN: ${player.getTurn()}`);
+player.printPlayerTurn();
 console.log("-----------------------------");
 game.printBoard();

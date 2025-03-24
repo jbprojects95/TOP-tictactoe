@@ -89,7 +89,8 @@ const game = (function () {
   // };
 
   const addToBoard = (row, col, value) => {
-    const acceptedValues = ["X", "x", "O", "o"];
+    // TODO: add logic that doesn't let player play "O" or "X multiple times in a row. IE: console.log("That's not allowed") or something to that effect
+    const acceptedValues = ["X", "O"];
 
     if (row < 1 || row > 3 || col < 1 || col > 3) {
       console.log("Invalid move!");
@@ -109,12 +110,22 @@ const game = (function () {
       return;
     }
 
-    gameBoard[gameRow][gameCol] = value;
+    const marker = value.toUpperCase();
+
+    if (player.getTurn() === 1 && marker !== "X") {
+      console.log("It's not your turn");
+      return;
+    } else if (player.getTurn() === 2 && marker !== "O") {
+      console.log("It's not your turn");
+      return;
+    }
+    gameBoard[gameRow][gameCol] = marker;
+    lastValidMove = marker;
+    player.setTurn(game.getLastValidMove());
 
     // !Ignore:
     // make lastValidMove an object incase i need the x and y value
     // lastValidMove = { row: gameRow, col: gameCol, value: value };
-    lastValidMove = value;
   };
 
   const checkWin = () => {
@@ -154,10 +165,13 @@ const game = (function () {
       // -----------------------------------------------
       // Here the code returns the winning marker (I'll change this logic eventually)
       // It will only do this after checking each individual winCon cells. If the markers all match it declares the winner.
-      if (win) return console.log(`Winner is: ${marker}`);
+      if (win) {
+        console.log(`Winner is: ${marker}`);
+        return true;
+      }
     }
-    // Return null if no winner is found
-    return null;
+    // Return faslse here if no winner is found
+    return false;
   };
 
   // const getLastValidMove = () => lastValidMove.value;
@@ -176,22 +190,21 @@ const game = (function () {
 const player = (function () {
   let turn = 1;
 
-  // const switchPlayer = () => {
-  //   if (turn === 1) {
-  //     turn = 2;
-  //   } else if (turn === 2) {
-  //     turn = 1;
-  //   } else {
-  //     console.log("Invalid turn value.");
-  //   }
-  // };
-
   const getTurn = () => turn;
+
   const setTurn = (value) => {
-    if ((turn === 1 && value === "X") || value === "x") {
+    if (game.checkWin()) {
+      // console.log("Winner found, no further moves allowed.");
+      return;
+    }
+    let marker = value.toUpperCase();
+
+    if (turn === 1 && marker === "X") {
       turn = 2;
-    } else {
+    } else if (turn === 2 && marker === "O") {
       turn = 1;
+    } else {
+      console.log("Not your turn!");
     }
   };
 
@@ -199,16 +212,20 @@ const player = (function () {
 })();
 
 game.createBoard(3, 3);
-console.log(player.getTurn());
-game.addToBoard(3, 2, "X");
-player.setTurn(game.getLastValidMove());
-console.log(player.getTurn());
 
-game.addToBoard(3, 1, "O");
+game.addToBoard(3, 2, "X");
+// player.setTurn(game.getLastValidMove());
+
 game.addToBoard(2, 2, "O");
-game.addToBoard(1, 3, "O");
+// player.setTurn(game.getLastValidMove());
 
 game.addToBoard(3, 1, "X");
-game.checkWin();
-console.log(`Last value: ${game.getLastValidMove()}`);
+
+game.addToBoard(1, 2, "O");
+
+game.addToBoard(3, 3, "X");
+
+// ----------------------------------------------------
+console.log(`PLAYER TURN: ${player.getTurn()}`);
+console.log("-----------------------------");
 game.printBoard();

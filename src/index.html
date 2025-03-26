@@ -6,11 +6,58 @@
     <title>Tic Tac Toe</title>
     <link href="./output.css" rel="stylesheet" />
   </head>
-  <body>
-    <div class="grid_wrapper">
-      <header><h1 class="text-4xl">Tic Tac Toe</h1></header>
-      <main><h2>Main</h2></main>
-      <footer><h3>Footer</h3></footer>
+  <body class="text-zinc-700">
+    <div
+      class="max-w-screen-xxl min-h-screen bg-slate-100 flex flex-col mx-auto"
+    >
+      <header
+        class="flex items-center justify-between bg-teal-400 py-4 px-[5%] lg:px-[10%]"
+      >
+        <h1 class="text-2xl md:text-3xl xl:4xl font-bold tracking-widest">
+          <span class="text-slate-50">Tic</span>
+          <span>Tac</span>
+          <span class="text-slate-50">Toe</span>
+        </h1>
+        <a href="#" class="">
+          <svg
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            class="w-7 h-auto lg:hidden xl:hidden 2xl:hidden"
+          >
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g
+              id="SVGRepo_tracerCarrier"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></g>
+            <g id="SVGRepo_iconCarrier">
+              <path
+                fill="currentColor"
+                fill-rule="evenodd"
+                d="M19 4a1 1 0 01-1 1H2a1 1 0 010-2h16a1 1 0 011 1zm0 6a1 1 0 01-1 1H2a1 1 0 110-2h16a1 1 0 011 1zm-1 7a1 1 0 100-2H2a1 1 0 100 2h16z"
+              ></path>
+            </g></svg
+        ></a>
+        <ul class="hidden lg:flex items-center justify-center gap-6">
+          <li
+            class="hover:text-slate-50 text-nowrap p-2 text-md lg:xl font-semibold tracking-widest"
+          >
+            <a href="#">item 1</a>
+          </li>
+          <li
+            class="hover:text-slate-50 text-nowrap p-2 text-md lg:xl font-semibold tracking-widest"
+          >
+            <a href="#">item 2</a>
+          </li>
+        </ul>
+      </header>
+      <main class="flex-1 py-4 px-[5%] lg:px-[10%] bg-amber-200 drop-shadow-md">
+        <h2>Main</h2>
+      </main>
+      <footer class="py-4 px-[5%] lg:px-[10%] bg-teal-400 shadow-lg">
+        <h3 class="font-bold">Footer</h3>
+      </footer>
     </div>
     <script defer src="script.js"></script>
   </body>

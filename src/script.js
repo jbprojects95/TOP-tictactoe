@@ -89,7 +89,6 @@ const game = (function () {
   // };
 
   const addToBoard = (row, col, value) => {
-    // TODO: add logic that doesn't let player play "O" or "X multiple times in a row. IE: console.log("That's not allowed") or something to that effect
     const acceptedValues = ["X", "O"];
 
     if (row < 1 || row > 3 || col < 1 || col > 3) {
@@ -186,6 +185,29 @@ const game = (function () {
   };
 })();
 
+const domManipulation = (function () {
+  const createBoardCells = (amount) => {
+    const boardContainer = document.querySelector(".grid_container");
+    // Had to call this here so that the grid itself dynamically changes depending on amount
+    boardContainer.style.gridTemplateColumns = `repeat(${amount}, 1fr)`; //amount + 1 for rectangle
+    const parent = boardContainer.parentElement;
+    boardContainer.innerHTML = "";
+
+    for (let div = 1; div <= amount * amount; div++) {
+      //amount * (amount + 1) for rectangle
+      let cells = document.createElement("div");
+      const divSize = parent / amount;
+      cells.classList.add("cells");
+      cells.style.width = divSize + "px";
+      cells.style.height = divSize + "px";
+
+      boardContainer.appendChild(cells);
+    }
+  };
+
+  return { createBoardCells };
+})();
+
 const player = (function () {
   let turn = 1;
 
@@ -218,16 +240,18 @@ const player = (function () {
   return { getTurn, setTurn, printPlayerTurn };
 })();
 
-game.createBoard(3, 3);
+// game.createBoard(3, 3);
 
-game.addToBoard(1, 1, "X");
-game.addToBoard(2, 2, "O");
-game.addToBoard(1, 2, "X");
-game.addToBoard(1, 3, "O");
-game.addToBoard(3, 3, "X");
-game.addToBoard(3, 1, "O");
+// game.addToBoard(1, 1, "X");
+// game.addToBoard(2, 2, "O");
+// game.addToBoard(1, 2, "X");
+// game.addToBoard(1, 3, "O");
+// game.addToBoard(3, 3, "X");
+// game.addToBoard(3, 1, "O");
 
-// ----------------------------------------------------
-player.printPlayerTurn();
-console.log("-----------------------------");
-game.printBoard();
+// // ----------------------------------------------------
+// player.printPlayerTurn();
+// console.log("-----------------------------");
+// game.printBoard();
+
+domManipulation.createBoardCells(3);

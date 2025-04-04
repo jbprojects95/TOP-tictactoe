@@ -127,6 +127,10 @@ const game = (function () {
     return false;
   };
 
+  const alertWin = (gameMarker) => {
+    confirm(`Player ${gameMarker} won!`);
+  };
+
   // const getLastValidMove = () => lastValidMove.value;
   const getLastValidMove = () => lastValidMove;
 
@@ -138,6 +142,7 @@ const game = (function () {
     getLastValidMove,
     generateWinConditions,
     checkWin,
+    alertWin,
     getBoardSize,
   };
 })();
@@ -195,7 +200,10 @@ const domController = (function () {
         game.addToBoard(row, col, marker);
 
         if (game.checkWin()) {
-          console.log("Winner!");
+          // Added this here to stop the confirm running before the marker is placed
+          setTimeout(() => {
+            game.alertWin(marker);
+          }, 100);
         }
         game.printBoard();
       });

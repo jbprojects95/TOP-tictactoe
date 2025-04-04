@@ -13,6 +13,9 @@
 
 .cells {
   aspect-ratio: 1 / 1;
+
   border: 2px solid;
   border-color: cornflowerblue;
+
+  cursor: pointer;
 }

@@ -1,52 +1,11 @@
+// TODO: associate gameBoard with the cells made in createBoardCells
+// TODO: link the above with the check win function
+// TODO: create a function that handles a player turn properly- IE: fires off setTurn etc on click.
+// *----------------------[GAME]-------------------------------------------------------
 const game = (function () {
-  // const gameBoard = [null, null, null, null, null, null, null, null, null];
   const gameBoard = [];
+  let winningConditions = [];
   let lastValidMove;
-  const winningConditions = [
-    // Rows
-    [
-      [0, 0],
-      [0, 1],
-      [0, 2],
-    ],
-    [
-      [1, 0],
-      [1, 1],
-      [1, 2],
-    ],
-    [
-      [2, 0],
-      [2, 1],
-      [2, 2],
-    ],
-    // Columns
-    [
-      [0, 0],
-      [1, 0],
-      [2, 0],
-    ],
-    [
-      [0, 1],
-      [1, 1],
-      [2, 1],
-    ],
-    [
-      [0, 2],
-      [1, 2],
-      [2, 2],
-    ],
-    // Diagonals
-    [
-      [0, 0],
-      [1, 1],
-      [2, 2],
-    ],
-    [
-      [0, 2],
-      [1, 1],
-      [2, 0],
-    ],
-  ];
 
   const createBoard = (rows, cols) => {
     for (let i = 0; i < rows; i++) {
@@ -67,42 +26,16 @@ const game = (function () {
 
   const getBoard = () => gameBoard;
 
-  // ?1D array alternative to the flat 2D array above
-  // const addToBoard = (index, value) => {
-  //   const acceptedValues = ["X", "x", "O", "o"];
-  //   if (!acceptedValues.includes(value)) {
-  //     console.log("Wrong input");
-  //     return;
-  //   }
-  //   if (index < 1 || index > 9) {
-  //     console.log("Not in grid!");
-  //     return;
-  //   }
-
-  //   const boardIndex = index - 1;
-  //   if (gameBoard.at(boardIndex)) {
-  //     console.log("Already at index!");
-  //     return;
-  //   }
-
-  //   gameBoard.splice(boardIndex, 1, value);
-  // };
-
   const addToBoard = (row, col, value) => {
     const acceptedValues = ["X", "O"];
-
-    if (row < 1 || row > 3 || col < 1 || col > 3) {
-      console.log("Invalid move!");
-      return;
-    }
 
     if (!acceptedValues.includes(value)) {
       console.log("Wrong input!");
       return;
     }
 
-    const gameRow = row - 1;
-    const gameCol = col - 1;
+    const gameRow = row;
+    const gameCol = col;
 
     if (gameBoard[gameRow][gameCol] !== null) {
       console.log("Space occupied!");
@@ -121,54 +54,76 @@ const game = (function () {
     gameBoard[gameRow][gameCol] = marker;
     lastValidMove = marker;
     player.setTurn(game.getLastValidMove());
+  };
 
-    // !Ignore:
-    // make lastValidMove an object incase i need the x and y value
-    // lastValidMove = { row: gameRow, col: gameCol, value: value };
+  const generateWinConditions = (size) => {
+    winningConditions = [];
+    // This is for the rows:
+    for (let i = 0; i < size; i++) {
+      const rowCondition = [];
+      for (let j = 0; j < size; j++) {
+        rowCondition.push([i, j]);
+      }
+      winningConditions.push(rowCondition);
+    }
+    // This is for the cols:
+    for (let j = 0; j < size; j++) {
+      const colCondition = [];
+      for (let i = 0; i < size; i++) {
+        colCondition.push([i, j]);
+      }
+      winningConditions.push(colCondition);
+    }
+
+    // for diagonal 1:
+    const diagonal1 = [];
+    for (let i = 0; i < size; i++) {
+      diagonal1.push([i, i]);
+    }
+    winningConditions.push(diagonal1);
+
+    // For diagonal 2:
+    // *No clue what's going on here
+    const diagonal2 = [];
+    for (let i = 0; i < size; i++) {
+      diagonal2.push([i, size - 1 - i]);
+    }
+    winningConditions.push(diagonal2);
+
+    return winningConditions;
+  };
+
+  const getBoardSize = () => {
+    const boardContainer = document.querySelector(".grid_container");
+    const cellCount = boardContainer.childElementCount;
+    const boardSize = Math.sqrt(cellCount);
+    return boardSize;
   };
 
   const checkWin = () => {
-    // I still don't full understand nested for loops, so I'm adding detailed explanations for future me to reference.
-
-    // This loops through each win con in winningConditions array. Each condition in that array is a set of 3 coordinate pairs.
     for (let condition of winningConditions) {
-      // -------------------------------------------
-      // For the current winning condition (IE: winningCondition[0]) it takes the first coordinate pair
-      // and double checks it's either x o or null.
-      // If it's null we skip the first cell as it's empty and continue
       const [firstRow, firstCol] = condition[0];
-      let marker = gameBoard[firstRow][firstCol];
+      let gameMarker = gameBoard[firstRow][firstCol];
 
-      if (marker === null) {
+      if (gameMarker === null) {
         continue;
       }
-      // -----------------------------------------------
-      // Here a flag is set up assuming a win. If win con isn't met then this is set to false later.
-      // The loop starts at 1 because we already did cell[0] to get the marker (remember that if it's null we continue)
-      // For each cell remaining in the winning condition it checks if the gameBoard value matches at the marker from the first cell.
-      // If any cell doesnt match win is then set to false and we break out the loop.
 
-      // So the for(condition in winningConditions) is checking each array in winCon array.
-      // EG: arrays = [[1, 2, 3], [4, 5, 6], [7, 8, 9]], it would loop through those as arrays[0] = [1, 2, 3]
-      // Then the loop below checks the cells within each condition the outer loop goes through.
       let win = true;
 
       for (let i = 1; i < condition.length; i++) {
         const [row, col] = condition[i];
-        if (gameBoard[row][col] !== marker) {
+        if (gameBoard[row][col] !== gameMarker) {
           win = false;
           break;
         }
-        // -----------------------------------------------
       }
-      // -----------------------------------------------
-      // Here the code returns the winning marker (I'll change this logic eventually)
-      // It will only do this after checking each individual winCon cells. If the markers all match it declares the winner.
+
       if (win) {
         return true;
       }
     }
-    // Return faslse here if no winner is found
+
     return false;
   };
 
@@ -181,32 +136,76 @@ const game = (function () {
     printBoard,
     addToBoard,
     getLastValidMove,
+    generateWinConditions,
     checkWin,
+    getBoardSize,
   };
 })();
 
-const domManipulation = (function () {
+// *----------------------[DOM]-------------------------------------------------------
+
+const domController = (function () {
   const createBoardCells = (amount) => {
     const boardContainer = document.querySelector(".grid_container");
     // Had to call this here so that the grid itself dynamically changes depending on amount
     boardContainer.style.gridTemplateColumns = `repeat(${amount}, 1fr)`; //amount + 1 for rectangle
     const parent = boardContainer.parentElement;
     boardContainer.innerHTML = "";
+    game.createBoard(amount, amount);
+    game.printBoard();
 
     for (let div = 1; div <= amount * amount; div++) {
       //amount * (amount + 1) for rectangle
       let cells = document.createElement("div");
-      const divSize = parent / amount;
+      const divSize = parent.width / amount;
       cells.classList.add("cells");
+
+      const row = Math.floor((div - 1) / amount);
+      const col = (div - 1) % amount;
+      cells.setAttribute("data-row", row);
+      cells.setAttribute("data-col", col);
       cells.style.width = divSize + "px";
       cells.style.height = divSize + "px";
 
       boardContainer.appendChild(cells);
+
+      cells.addEventListener("click", () => {
+        if (cells.textContent !== "") return;
+
+        console.log("cell clicked!");
+        console.log(
+          cells.getAttribute("data-row"),
+          cells.getAttribute("data-col")
+        );
+
+        const currentTurn = player.getTurn();
+        let marker;
+        if (currentTurn === 1) {
+          marker = "X";
+        } else if (currentTurn === 2) {
+          marker = "O";
+        }
+
+        let cellValue = document.createElement("p");
+        cellValue.textContent = marker;
+        cells.appendChild(cellValue);
+
+        const row = Number(cells.getAttribute("data-row"));
+        const col = Number(cells.getAttribute("data-col"));
+        game.addToBoard(row, col, marker);
+
+        if (game.checkWin()) {
+          console.log("Winner!");
+        }
+        game.printBoard();
+      });
     }
   };
 
   return { createBoardCells };
 })();
+
+// *----------------------[PLAYER]-------------------------------------------------------
 
 const player = (function () {
   let turn = 1;
@@ -214,10 +213,6 @@ const player = (function () {
   const getTurn = () => turn;
 
   const setTurn = (value) => {
-    if (game.checkWin()) {
-      console.log("Winner found, no further moves allowed.");
-      return;
-    }
     let marker = value.toUpperCase();
 
     if (turn === 1 && marker === "X") {
@@ -240,18 +235,6 @@ const player = (function () {
   return { getTurn, setTurn, printPlayerTurn };
 })();
 
-// game.createBoard(3, 3);
-
-// game.addToBoard(1, 1, "X");
-// game.addToBoard(2, 2, "O");
-// game.addToBoard(1, 2, "X");
-// game.addToBoard(1, 3, "O");
-// game.addToBoard(3, 3, "X");
-// game.addToBoard(3, 1, "O");
-
-// // ----------------------------------------------------
-// player.printPlayerTurn();
-// console.log("-----------------------------");
-// game.printBoard();
-
-domManipulation.createBoardCells(3);
+domController.createBoardCells(3);
+const boardSize = game.getBoardSize();
+game.generateWinConditions(boardSize);

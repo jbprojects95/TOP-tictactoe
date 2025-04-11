@@ -1,11 +1,14 @@
-// TODO: associate gameBoard with the cells made in createBoardCells
-// TODO: link the above with the check win function
-// TODO: create a function that handles a player turn properly- IE: fires off setTurn etc on click.
+// TODO: create choice between playing against computer or player
+// TODO: add visuals to denote who's turn it is
+// TODO: create computer logic
+// TODO: create a rest game fn
+
 // *----------------------[GAME]-------------------------------------------------------
 const game = (function () {
   const gameBoard = [];
   let winningConditions = [];
   let lastValidMove;
+  let moves = 9;
 
   const createBoard = (rows, cols) => {
     for (let i = 0; i < rows; i++) {
@@ -93,12 +96,12 @@ const game = (function () {
     return winningConditions;
   };
 
-  const getBoardSize = () => {
-    const boardContainer = document.querySelector(".grid_container");
-    const cellCount = boardContainer.childElementCount;
-    const boardSize = Math.sqrt(cellCount);
-    return boardSize;
-  };
+  // const getBoardSize = () => {
+  //   const boardContainer = document.querySelector(".grid_container");
+  //   const cellCount = boardContainer.childElementCount;
+  //   const boardSize = Math.sqrt(cellCount);
+  //   return boardSize;
+  // };
 
   const checkWin = () => {
     for (let condition of winningConditions) {
@@ -127,12 +130,10 @@ const game = (function () {
     return false;
   };
 
-  const alertWin = (gameMarker) => {
-    confirm(`Player ${gameMarker} won!`);
-  };
-
-  // const getLastValidMove = () => lastValidMove.value;
   const getLastValidMove = () => lastValidMove;
+
+  const setMovesLeft = () => moves--;
+  const getMovesLeft = () => moves;
 
   return {
     createBoard,
@@ -142,8 +143,8 @@ const game = (function () {
     getLastValidMove,
     generateWinConditions,
     checkWin,
-    alertWin,
-    getBoardSize,
+    setMovesLeft,
+    getMovesLeft,
   };
 })();
 
@@ -198,11 +199,19 @@ const domController = (function () {
         const row = Number(cells.getAttribute("data-row"));
         const col = Number(cells.getAttribute("data-col"));
         game.addToBoard(row, col, marker);
+        game.setMovesLeft();
+        console.log(game.getMovesLeft());
+
+        if (game.getMovesLeft() === 0 && !game.checkWin()) {
+          setTimeout(() => {
+            alert("It's a draw!");
+          }, 100);
+        }
 
         if (game.checkWin()) {
           // Added this here to stop the confirm running before the marker is placed
           setTimeout(() => {
-            game.alertWin(marker);
+            domController.alertWin(marker);
           }, 100);
         }
         game.printBoard();
@@ -210,7 +219,24 @@ const domController = (function () {
     }
   };
 
-  return { createBoardCells };
+  const getBoardSize = () => {
+    const boardContainer = document.querySelector(".grid_container");
+    const cellCount = boardContainer.childElementCount;
+    const boardSize = Math.sqrt(cellCount);
+    return boardSize;
+  };
+
+  const alertWin = (gameMarker) => {
+    confirm(`Player ${gameMarker} won!`);
+  };
+
+  const init = () => {
+    createBoardCells(3);
+    const boardSize = getBoardSize();
+    game.generateWinConditions(boardSize);
+  };
+
+  return { createBoardCells, getBoardSize, alertWin, init };
 })();
 
 // *----------------------[PLAYER]-------------------------------------------------------
@@ -243,6 +269,4 @@ const player = (function () {
   return { getTurn, setTurn, printPlayerTurn };
 })();
 
-domController.createBoardCells(3);
-const boardSize = game.getBoardSize();
-game.generateWinConditions(boardSize);
+domController.init();

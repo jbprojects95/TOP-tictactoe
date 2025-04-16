@@ -3,6 +3,47 @@
 // TODO: create computer logic
 // TODO: create a rest game fn
 
+// *----------------------[PLAYER]-------------------------------------------------------
+
+const player = (function () {
+  let turn = 1;
+  const markers = { 1: "X", 2: "O" };
+
+  const getTurn = () => turn;
+
+  const setTurn = () => {
+    if (turn === 1) {
+      turn = 2;
+    } else if (turn === 2) {
+      turn = 1;
+    } else {
+      console.log("Not your turn!");
+    }
+  };
+
+  const printPlayerTurn = () => {
+    if (!game.checkWin()) {
+      console.log(`PLAYER TURN: ${player.getTurn()}`);
+    } else {
+      console.log(`Winner is: ${game.getLastValidMove()}`);
+    }
+  };
+
+  const resetPlayerTurn = () => {
+    turn = 1;
+  };
+
+  const getCurrentMarker = () => markers[turn];
+
+  return {
+    getTurn,
+    setTurn,
+    printPlayerTurn,
+    resetPlayerTurn,
+    getCurrentMarker,
+  };
+})();
+
 // *----------------------[GAME]-------------------------------------------------------
 const game = (function () {
   const gameBoard = [];
@@ -56,7 +97,8 @@ const game = (function () {
     }
     gameBoard[gameRow][gameCol] = marker;
     lastValidMove = marker;
-    player.setTurn(game.getLastValidMove());
+    // Commented this bit out because it was conflicting with player.setTurn()
+    // player.setTurn(game.getLastValidMove());
   };
 
   const generateWinConditions = (size) => {
@@ -96,13 +138,6 @@ const game = (function () {
     return winningConditions;
   };
 
-  // const getBoardSize = () => {
-  //   const boardContainer = document.querySelector(".grid_container");
-  //   const cellCount = boardContainer.childElementCount;
-  //   const boardSize = Math.sqrt(cellCount);
-  //   return boardSize;
-  // };
-
   const checkWin = () => {
     for (let condition of winningConditions) {
       const [firstRow, firstCol] = condition[0];
@@ -135,6 +170,12 @@ const game = (function () {
   const setMovesLeft = () => moves--;
   const getMovesLeft = () => moves;
 
+  const resetBoardState = () => {
+    gameBoard.length = 0;
+    moves = 9;
+    lastValidMove = null;
+  };
+
   return {
     createBoard,
     getBoard,
@@ -145,6 +186,7 @@ const game = (function () {
     checkWin,
     setMovesLeft,
     getMovesLeft,
+    resetBoardState,
   };
 })();
 
@@ -178,19 +220,7 @@ const domController = (function () {
       cells.addEventListener("click", () => {
         if (cells.textContent !== "") return;
 
-        console.log("cell clicked!");
-        console.log(
-          cells.getAttribute("data-row"),
-          cells.getAttribute("data-col")
-        );
-
-        const currentTurn = player.getTurn();
-        let marker;
-        if (currentTurn === 1) {
-          marker = "X";
-        } else if (currentTurn === 2) {
-          marker = "O";
-        }
+        let marker = player.getCurrentMarker();
 
         let cellValue = document.createElement("p");
         cellValue.textContent = marker;
@@ -215,6 +245,7 @@ const domController = (function () {
           }, 100);
         }
         game.printBoard();
+        player.setTurn();
       });
     }
   };
@@ -236,37 +267,17 @@ const domController = (function () {
     game.generateWinConditions(boardSize);
   };
 
-  return { createBoardCells, getBoardSize, alertWin, init };
-})();
-
-// *----------------------[PLAYER]-------------------------------------------------------
-
-const player = (function () {
-  let turn = 1;
-
-  const getTurn = () => turn;
-
-  const setTurn = (value) => {
-    let marker = value.toUpperCase();
-
-    if (turn === 1 && marker === "X") {
-      turn = 2;
-    } else if (turn === 2 && marker === "O") {
-      turn = 1;
-    } else {
-      console.log("Not your turn!");
-    }
+  const resetGame = () => {
+    game.resetBoardState();
+    player.resetPlayerTurn();
+    init();
   };
 
-  const printPlayerTurn = () => {
-    if (!game.checkWin()) {
-      console.log(`PLAYER TURN: ${player.getTurn()}`);
-    } else {
-      console.log(`Winner is: ${game.getLastValidMove()}`);
-    }
-  };
+  const resetBtn = document.querySelector("#reset_btn");
 
-  return { getTurn, setTurn, printPlayerTurn };
+  resetBtn.addEventListener("click", resetGame);
+
+  return { createBoardCells, getBoardSize, alertWin, init, resetGame };
 })();
 
 domController.init();

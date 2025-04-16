@@ -7,14 +7,11 @@
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
     --color-red-500: oklch(0.637 0.237 25.331);
-    --color-amber-400: oklch(0.828 0.189 84.429);
-    --color-emerald-500: oklch(0.696 0.17 162.48);
+    --color-red-600: oklch(0.577 0.245 27.325);
+    --color-red-900: oklch(0.396 0.141 25.723);
     --color-emerald-700: oklch(0.508 0.118 165.612);
     --color-emerald-900: oklch(0.378 0.077 168.94);
     --color-teal-400: oklch(0.777 0.152 181.912);
-    --color-teal-500: oklch(0.704 0.14 182.503);
-    --color-blue-500: oklch(0.623 0.214 259.815);
-    --color-blue-700: oklch(0.488 0.243 264.376);
     --color-slate-50: oklch(0.984 0.003 247.858);
     --color-zinc-50: oklch(0.985 0 0);
     --color-zinc-700: oklch(0.37 0.013 285.805);
@@ -445,15 +442,6 @@
   .aspect-square {
     aspect-ratio: 1 / 1;
   }
-  .h-\[500px\] {
-    height: 500px;
-  }
-  .h-\[600px\] {
-    height: 600px;
-  }
-  .h-\[700px\] {
-    height: 700px;
-  }
   .h-auto {
     height: auto;
   }
@@ -469,29 +457,14 @@
   .min-h-screen {
     min-height: 100vh;
   }
-  .w-1 {
-    width: calc(var(--spacing) * 1);
-  }
   .w-1\/2 {
     width: calc(1/2 * 100%);
   }
   .w-7 {
     width: calc(var(--spacing) * 7);
   }
-  .w-full {
-    width: 100%;
-  }
   .w-screen {
     width: 100vw;
-  }
-  .max-w-\[500px\] {
-    max-width: 500px;
-  }
-  .max-w-\[600px\] {
-    max-width: 600px;
-  }
-  .max-w-\[700px\] {
-    max-width: 700px;
   }
   .max-w-none {
     max-width: none;
@@ -885,9 +858,6 @@
   .justify-items-stretch {
     justify-items: stretch;
   }
-  .gap-2 {
-    gap: calc(var(--spacing) * 2);
-  }
   .gap-6 {
     gap: calc(var(--spacing) * 6);
   }
@@ -1099,9 +1069,6 @@
   .bg-\(color\:--my-color\) {
     background-color: var(--my-color);
   }
-  .bg-\[\#0080d6\] {
-    background-color: #0080d6;
-  }
   .bg-\[\#0088cc\] {
     background-color: #0088cc;
   }
@@ -1110,15 +1077,6 @@
   }
   .bg-\[var\(--my_variable\)\] {
     background-color: var(--my_variable);
-  }
-  .bg-amber-400 {
-    background-color: var(--color-amber-400);
-  }
-  .bg-blue-500 {
-    background-color: var(--color-blue-500);
-  }
-  .bg-emerald-500 {
-    background-color: var(--color-emerald-500);
   }
   .bg-emerald-700 {
     background-color: var(--color-emerald-700);
@@ -1132,11 +1090,11 @@
   .bg-red-500\/\[50\%\] {
     background-color: color-mix(in oklab, var(--color-red-500) 50%, transparent);
   }
+  .bg-red-600 {
+    background-color: var(--color-red-600);
+  }
   .bg-teal-400 {
     background-color: var(--color-teal-400);
-  }
-  .bg-teal-500 {
-    background-color: var(--color-teal-500);
   }
   .-bg-conic {
     --tw-gradient-position: in oklab;
@@ -1322,32 +1280,8 @@
   .py-4 {
     padding-block: calc(var(--spacing) * 4);
   }
-  .py-6 {
-    padding-block: calc(var(--spacing) * 6);
-  }
-  .py-10 {
-    padding-block: calc(var(--spacing) * 10);
-  }
-  .pt-2 {
-    padding-top: calc(var(--spacing) * 2);
-  }
-  .pt-3 {
-    padding-top: calc(var(--spacing) * 3);
-  }
-  .pt-5 {
-    padding-top: calc(var(--spacing) * 5);
-  }
-  .pt-\[2\%\] {
-    padding-top: 2%;
-  }
-  .pt-\[5\%\] {
-    padding-top: 5%;
-  }
-  .pb-3 {
-    padding-bottom: calc(var(--spacing) * 3);
-  }
-  .pb-5 {
-    padding-bottom: calc(var(--spacing) * 5);
+  .py-5 {
+    padding-block: calc(var(--spacing) * 5);
   }
   .text-center {
     text-align: center;
@@ -1938,17 +1872,17 @@
   .transform-view {
     transform-box: view-box;
   }
-  .hover\:bg-blue-700 {
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--color-blue-700);
-      }
-    }
-  }
   .hover\:bg-emerald-900 {
     &:hover {
       @media (hover: hover) {
         background-color: var(--color-emerald-900);
+      }
+    }
+  }
+  .hover\:bg-red-900 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-red-900);
       }
     }
   }
